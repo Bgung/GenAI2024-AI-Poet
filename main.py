@@ -12,11 +12,11 @@ from langchain.chains.sequential import SequentialChain
 load_dotenv()
 
 prompt_gen = PromptTemplate(
-    template="당신은 훌륭한 한국인 시인이고, 200자 정도의 길이를 가진 시를 쓰는 중입니다 주제에 알맞으면서 최대한 창의적이고, 운율에 맞게 작성하기 위한 프롬프트를 작성하세요. 주제는 '{subject}'입니다.",
+    template="당신은 한국의 저명한 프롬프트 엔지니어입니다. 주제에 알맞으면서 창의적이고 운율이 훌륭한 시를 작성하기 위한 프롬프트를 작성하세요. 다양한 프롬프트 엔지니어링 기법을 사용해도 좋습니다. 주제는 '{subject}'입니다.",
     input_variables=["subject"]
 )
 poem_prompt = PromptTemplate(
-    template="{prompt}",
+    template="당신은 한국의 훌륭한 시인입니다. 아래에 맞게 훌륭한 시를 적절한 길이로 작성하세요. \n {prompt}",
     input_variables=["prompt"],
     output_variables=["poem"]
 )
@@ -61,7 +61,7 @@ tester_chain = LLMChain(
 chain = SequentialChain(
     chains=[prompt_generator, poem_generator, title_generator, tester_chain],
     input_variables=["subject"],
-    output_variables=["title", "poem", "evaluation"],
+    output_variables=["prompt", "title", "poem", "evaluation"],
     return_all=True
 )
 
@@ -72,7 +72,7 @@ st.write("시의 주제: ", subject)
 if st.button("시 작성"):
     st.write("시 작성 중...")
     poem = chain.invoke({"subject": subject})
-    print(poem)
+    print("Prompt: ", poem["prompt"])
     st.write("시 작성 완료")
     st.write("시 제목: ", poem["title"])
     st.write("시:\n", poem["poem"])
